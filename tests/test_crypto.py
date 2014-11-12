@@ -1264,6 +1264,25 @@ class X509ReqTests(TestCase, _PKeyInteractionTestsMixin):
         request.sign(pkey, GOOD_DIGEST)
         self.assertEqual(True, request.verify(pkey))
 
+    def test_digest(self):
+        """
+        :py:obj:`X509Req.digest` returns a string giving ":"-separated
+        hex-encoded words of the digest of the certificate request.
+        """
+        key = load_privatekey(FILETYPE_PEM, server_key_pem)
+
+        csr = X509Req()
+        csr.get_subject().CN = "example.com"
+        csr.set_pubkey(key)
+        csr.sign(key, "MD5")
+
+        self.assertEqual(
+            # This is MD5 instead of GOOD_DIGEST because the digest algorithm
+            # actually matters to the assertion (ie, another arbitrary, good
+            # digest will not produce the same digest).
+            csr.digest("MD5"),
+            b("E9:34:0A:15:8C:6B:3A:65:F6:E4:99:32:04:4D:55:43"))
+
 
 class X509Tests(TestCase, _PKeyInteractionTestsMixin):
     """
