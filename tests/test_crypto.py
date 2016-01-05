@@ -1276,6 +1276,10 @@ class X509ReqTests(TestCase, _PKeyInteractionTestsMixin):
         csr.set_pubkey(key)
         csr.sign(key, "MD5")
 
+        print(dump_certificate_request(FILETYPE_PEM, csr))
+        print(dump_certificate_request(FILETYPE_ASN1, csr))
+        print(dump_certificate_request(FILETYPE_TEXT, csr))
+
         self.assertEqual(
             # This is MD5 instead of GOOD_DIGEST because the digest algorithm
             # actually matters to the assertion (ie, another arbitrary, good
